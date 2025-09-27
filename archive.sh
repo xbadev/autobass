@@ -37,17 +37,31 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
   exit 0
 fi
 
-# check for correct # of arguments
-if [[ $# -lt 2 ]]; then
-  echo "ERROR: Missing arguments."
-  show_help
-  exit 1
-fi
-
+# Start log early
 log_info "archive script started."
 
-SOURCE_DIR="$1"
-TARGET_DIR="$2"
+# If fewer than 2 args, try archive.conf
+if [[ $# -lt 2 ]]; then
+    # Look for config file next to this script
+    CONF_FILE="$(dirname "$0")/archive.conf"
+    if [[ -f "$CONF_FILE" ]]; then
+        # shellcheck disable=SC1090
+        . "$CONF_FILE"
+        if [[ -z "$SOURCE_DIR" || -z "$TARGET_DIR" ]]; then
+            log_error "archive.conf is missing SOURCE_DIR and/or TARGET_DIR. Exiting."
+            exit 1
+        fi
+    else
+        log_error "No CLI arguments and archive.conf not found. Exiting."
+        show_help
+        exit 1
+    fi
+else
+    # Use CLI arguments (override config)
+    SOURCE_DIR="$1"
+    TARGET_DIR="$2"
+fi
+
 
 #validate source directory
 if [[ ! -d "$SOURCE_DIR" || ! -r "$SOURCE_DIR" ]]; then
