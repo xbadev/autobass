@@ -4,6 +4,8 @@
 # how to use: ./archive.sh <source_dir> <target_dir>
 # Options: -h, --help   to show instructions
 
+# Compression & logging issue 1
+
 #logging helpers :-
 LOG_FILE="$(dirname "$0")/archive.log"
 
