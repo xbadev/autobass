@@ -1,0 +1,10 @@
+#ignore log files
+*.log
+
+#ignore temporary files
+*.tmp
+*~
+
+#ignore backup archives
+backup_*/
+*.tar.gz
