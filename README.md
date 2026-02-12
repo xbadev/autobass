@@ -1,102 +1,100 @@
-# AutoBASS – Automated Backup Script
+# AutoBASS
 
-AutoBASS is a Bash script (`archive.sh`) for creating compressed backups with logging, config file defaults, and file exclusion support.  
-It was developed as part of the ISE 337 AutoBASS assignment.
-
----
-
-## Features
-- Timestamped `.tar.gz` backups
-- Logs to both stdout/stderr and `archive.log` with timestamps
-- Config file fallback (`archive.conf`) for default directories
-- `.bassignore` file support for exclusions
-- `--dry-run` option to simulate without writing an archive
-- Help flag `-h` or `--help`
+Bash CLI tool for creating compressed, timestamped `.tar.gz` backups — with config-file defaults, pattern-based exclusions, and dry-run support.
 
 ---
 
-## Installation
-Clone the repository and make the script executable:
-git clone <your-repo-url>
+## Why AutoBASS?
+
+AutoBASS was built to demonstrate clean, production-style Bash scripting — combining CLI parsing, config fallback, exclusion handling, structured logging, and safe dry-run execution in a minimal, reproducible backup tool.
+
+## Quick Start
+
+```bash
+git clone https://github.com/xbadev/autobass.git
 cd autobass
 chmod +x archive.sh
+```
 
----
+```bash
+# View usage instructions
+./archive.sh --help
 
-## Usage
-Run with explicit arguments:
-./archive.sh <source_dir> <target_dir>
-
-Or use defaults from `archive.conf` if no CLI args are given:
-./archive.sh
-
----
-
-## Config File (archive.conf)
-The script can read default directories from `archive.conf`:
-
-SOURCE_DIR=/home/bader/mysource
-TARGET_DIR=/home/bader/mybackup
-
-CLI args will always override config file values.
-
----
-
-## Exclusions (.bassignore)
-You can exclude files or folders from being archived by listing patterns in `.bassignore`.
-
-Example `.bassignore`:
-node_modules/
-*.log
-*.tmp
-
-- If `.bassignore` exists in the source directory, it will be used.  
-- Otherwise, the script looks for `.bassignore` in the repo root.
-
----
-
-## Options
-- `-h`, `--help` → Show help message  
-- `-d`, `--dry-run` → Simulate backup without creating archive  
-
----
-
-## Examples
-
-Run backup with CLI args:
+# Run with explicit paths
 ./archive.sh ~/mysource ~/mybackup
 
-Run with config file:
+# Run with defaults from archive.conf
 ./archive.sh
 
-Dry-run simulation:
-./archive.sh -d ~/mysource ~/mybackup
+# Simulate without writing anything
+./archive.sh --dry-run ~/mysource ~/mybackup
+```
 
-Using help:
-./archive.sh -h
+## How It Works
 
----
+[`archive.sh`](archive.sh) parses CLI arguments (or falls back to [`archive.conf`](archive.conf)), validates the source directory, loads exclusion patterns from [`.bassignore`](.bassignore), and compresses the source into a timestamped `.tar.gz` in the target directory. Every step is logged to both the terminal and `archive.log`.
 
-## Logging
-All runs append logs to:
-archive.log
+```
+CLI args or archive.conf → Validate source → Load .bassignore → tar -czf backup_TIMESTAMP.tar.gz → Log result
+```
 
-Example log entries:
-INFO: [2025-09-26 23:38:48] archive script started.
-INFO: [2025-09-26 23:38:48] Backup completed successfully: /home/bader/mybackup/backup_20250926_233848.tar.gz
+## Options
 
----
+| Flag | Description |
+|------|-------------|
+| `-h`, `--help` | Show usage instructions |
+| `-d`, `--dry-run` | Log what would happen without creating an archive |
 
-## Versioning
-- v1.0 – MVP release
-  - timestamped `.tar.gz` backups  
-  - stdout/stderr + archive.log logging  
-  - config file fallback  
-  - `.bassignore` exclusions  
-  - `--dry-run` simulation  
+
+## Configuration
+
+[`archive.conf`](archive.conf) provides default paths when no CLI args are given:
+
+```bash
+SOURCE_DIR="/path/to/source"
+TARGET_DIR="/path/to/backup"
+```
+
+CLI arguments always override config values.
+
+
+## Exclusions
+
+[`.bassignore`](.bassignore) works like `.gitignore` — one pattern per line, passed to `tar --exclude-from`:
+
+```
+*.tmp
+*.log
+node_modules/
+.cache/
+```
+
+Lookup order: `.bassignore` in source directory → `.bassignore` in script directory → no exclusions.
+
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success or dry-run completed |
+| `1` | Invalid option or missing config |
+| `2` | Source directory missing or unreadable |
+| `3` | Target directory could not be created |
+| `4` | Compression failed |
+
+
+## Repo Structure
+
+```
+├── archive.sh        # Backup script
+├── archive.conf      # Default source/target paths
+├── .bassignore       # Exclusion patterns
+├── .gitignore        # Git-tracked exclusions
+└── LICENSE           # MIT
+```
 
 ---
 
 ## Author
-Bader Alansari – ISE 337 AutoBASS Assignment
 
+**Bader Alansari** — [@xbadev](https://github.com/xbadev)
