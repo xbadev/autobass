@@ -1,5 +1,5 @@
-#!/bin/bash
-#
+!/bin/bash
+
 # AutoBASS - archive.sh
 #
 # Creates a timestamped compressed backup (.tar.gz) of a source directory.
@@ -11,7 +11,6 @@
 # - Logging: stdout/stderr + archive.log (saved next to this script)
 # - Dry-run: --dry-run / -d (logs what would happen, does not create an archive)
 # - Help: --help / -h
-#
 
 LOG_FILE="$(dirname "$0")/archive.log"
 
