@@ -6,7 +6,7 @@ Bash CLI tool for creating compressed, timestamped `.tar.gz` backups — with co
 
 ## Why AutoBASS?
 
-AutoBASS was built to demonstrate clean, production-style Bash scripting — combining CLI parsing, config fallback, exclusion handling, structured logging, and safe dry-run execution in a minimal, reproducible backup tool.
+I kept running manual `tar` commands to back up project directories and forgetting flags, overwriting old copies, or missing files I meant to exclude. AutoBASS wraps that into a single repeatable command — with config defaults so it can run unattended via cron, `.bassignore` so I stop archiving `node_modules/`, and dry-run so I can verify before committing to disk.
 
 ## Quick Start
 
